@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Layanan — Planet Aksesoris</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .services-detail {
+      padding: 80px 24px;
+      background: var(--light);
+    }
+    .services-detail-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Service Detail Cards */
+    .service-detail-block {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      padding: 60px 0;
+      border-bottom: 1px solid rgba(26,60,94,0.08);
+    }
+    .service-detail-block:last-child { border-bottom: none; }
+    .service-detail-block.reverse { direction: rtl; }
+    .service-detail-block.reverse > * { direction: ltr; }
+
+    .service-detail-img {
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+    }
+    .service-detail-img img {
+      width: 100%;
+      height: 360px;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    .service-detail-img:hover img { transform: scale(1.04); }
+
+    .service-detail-content { }
+    .service-detail-content .service-num {
+      font-size: 72px;
+      font-family: 'Playfair Display', serif;
+      color: rgba(26,60,94,0.08);
+      line-height: 1;
+      margin-bottom: -16px;
+    }
+    .service-detail-content h2 {
+      font-size: 32px;
+      color: var(--primary-dark);
+      margin-bottom: 16px;
+    }
+    .service-detail-content p {
+      font-size: 15px;
+      color: var(--gray);
+      line-height: 1.8;
+      margin-bottom: 24px;
+    }
+    .service-features {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+    .service-feature-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--text);
+    }
+    .service-feature-item::before {
+      content: '✓';
+      width: 22px; height: 22px;
+      background: linear-gradient(135deg, var(--primary), #2563ab);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* Pricing Table */
+    .pricing {
+      padding: 80px 24px;
+      background: var(--white);
+    }
+    .pricing-container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .pricing-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    .pricing-table {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+    }
+    .pricing-table table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .pricing-table thead {
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+    }
+    .pricing-table thead th {
+      padding: 18px 24px;
+      text-align: left;
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .pricing-table tbody tr {
+      border-bottom: 1px solid var(--gray-light);
+      transition: background var(--transition);
+    }
+    .pricing-table tbody tr:last-child { border-bottom: none; }
+    .pricing-table tbody tr:hover { background: var(--light); }
+    .pricing-table tbody td {
+      padding: 16px 24px;
+      font-size: 14px;
+      color: var(--text);
+      vertical-align: middle;
+    }
+    .pricing-table tbody td:first-child { font-weight: 600; color: var(--primary); }
+    .pricing-table .price-col {
+      font-weight: 700;
+      color: var(--accent) !important;
+      font-size: 15px !important;
+    }
+    .price-note {
+      text-align: center;
+      font-size: 13px;
+      color: var(--gray);
+      margin-top: 16px;
+      font-style: italic;
+    }
+
+    /* CTA banner */
+    .cta-banner {
+      background: linear-gradient(135deg, var(--accent) 0%, #f5a623 100%);
+      padding: 60px 24px;
+      text-align: center;
+    }
+    .cta-banner h2 {
+      font-size: clamp(24px, 4vw, 38px);
+      color: var(--primary-dark);
+      margin-bottom: 14px;
+    }
+    .cta-banner p {
+      font-size: 16px;
+      color: rgba(15,37,64,0.75);
+      margin-bottom: 32px;
+      max-width: 520px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .cta-banner .btn-primary { background: var(--primary-dark); }
+
+    @media (max-width: 768px) {
+      .service-detail-block {
+        grid-template-columns: 1fr;
+        gap: 28px;
+      }
+      .service-detail-block.reverse { direction: ltr; }
+      .pricing-table { overflow-x: auto; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="nav-logo">
+      <div class="logo-badge">PA</div>
+      <div class="logo-text">
+        <span class="logo-name">Planet Aksesoris</span>
+        <span class="logo-sub">ATK · Percetakan · Studio Foto</span>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Beranda</a></li>
+      <li><a href="layanan.html" class="active">Layanan</a></li>
+      <li><a href="produk.html">Produk</a></li>
+      <li><a href="kontak.html" class="nav-cta">Hubungi Kami</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobileMenu" style="display:none;flex-direction:column;">
+    <a href="index.html">Beranda</a>
+    <a href="layanan.html">Layanan</a>
+    <a href="produk.html">Produk</a>
+    <a href="kontak.html">Hubungi Kami</a>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <span class="section-label" style="margin-bottom: 20px;">Layanan Kami</span>
+  <h1>Semua Layanan Terlengkap</h1>
+  <p>Dari percetakan profesional hingga foto studio dan aksesori dekoratif — semua tersedia di Planet Aksesoris.</p>
+</div>
+
+<!-- SERVICE DETAILS -->
+<section class="services-detail">
+  <div class="services-detail-container">
+
+    <!-- 1. Percetakan -->
+    <div class="service-detail-block scroll-reveal">
+      <div class="service-detail-img">
+        <img src="https://planet-aksesoris-atk-percetakan-studiofoto.lovable.app/assets/printing-C1_q1Q0K.jpg" alt="Layanan Percetakan" />
+      </div>
+      <div class="service-detail-content">
+        <div class="service-num">01</div>
+        <span class="section-label">Percetakan</span>
+        <h2>Cetak Berkualitas Tinggi</h2>
+        <p>Layanan percetakan profesional menggunakan printer Epson terbaik. Kami mencetak dokumen, brosur, banner, undangan, kartu nama, dan berbagai kebutuhan cetak lainnya dengan hasil yang tajam dan tahan lama.</p>
+        <div class="service-features">
+          <div class="service-feature-item">Cetak dokumen hitam putih & berwarna</div>
+          <div class="service-feature-item">Print foto resolusi tinggi</div>
+          <div class="service-feature-item">Cetak banner & spanduk</div>
+          <div class="service-feature-item">Undangan & kartu nama</div>
+          <div class="service-feature-item">Fotokopi & scan dokumen</div>
+        </div>
+        <a href="kontak.html" class="btn btn-primary">Pesan Sekarang</a>
+      </div>
+    </div>
+
+    <!-- 2. Foto Studio -->
+    <div class="service-detail-block reverse scroll-reveal">
+      <div class="service-detail-img">
+        <img src="https://planet-aksesoris-atk-percetakan-studiofoto.lovable.app/assets/studio-Dw7DM2kL.jpg" alt="Layanan Foto Studio" />
+      </div>
+      <div class="service-detail-content">
+        <div class="service-num">02</div>
+        <span class="section-label">Foto Studio</span>
+        <h2>Studio Foto Profesional</h2>
+        <p>Studio foto kami dilengkapi dengan pencahayaan profesional untuk menghasilkan foto ID, paspor, visa, dan potret keluarga yang sempurna. Kami memastikan setiap foto memenuhi standar resmi yang diperlukan.</p>
+        <div class="service-features">
+          <div class="service-feature-item">Foto KTP, SIM, & Paspor</div>
+          <div class="service-feature-item">Foto ijazah & SKCK</div>
+          <div class="service-feature-item">Potret keluarga & individual</div>
+          <div class="service-feature-item">Background berbagai warna</div>
+          <div class="service-feature-item">Langsung cetak di tempat</div>
+        </div>
+        <a href="kontak.html" class="btn btn-primary">Pesan Sekarang</a>
+      </div>
+    </div>
+
+    <!-- 3. Cetak & Bingkai -->
+    <div class="service-detail-block scroll-reveal">
+      <div class="service-detail-img">
+        <img src="https://planet-aksesoris-atk-percetakan-studiofoto.lovable.app/assets/photo-processing-DZx9iwyc.jpg" alt="Cetak & Bingkai Foto" />
+      </div>
+      <div class="service-detail-content">
+        <div class="service-num">03</div>
+        <span class="section-label">Cetak & Bingkai</span>
+        <h2>Cetak & Bingkai Foto</h2>
+        <p>Abadikan momen berharga Anda dengan layanan cetak dan bingkai foto berkualitas premium. Tersedia berbagai ukuran dari 5R hingga 20R, dengan pilihan laminasi glossy dan matte untuk hasil terbaik.</p>
+        <div class="service-features">
+          <div class="service-feature-item">Cetak foto ukuran 5R s/d 20R</div>
+          <div class="service-feature-item">Laminasi glossy & matte</div>
+          <div class="service-feature-item">Bingkai foto berbagai ukuran</div>
+          <div class="service-feature-item">Poster & canvas print</div>
+          <div class="service-feature-item">Kalender foto custom</div>
+        </div>
+        <a href="kontak.html" class="btn btn-primary">Pesan Sekarang</a>
+      </div>
+    </div>
+
+    <!-- 4. Aksesori & Dekorasi -->
+    <div class="service-detail-block reverse scroll-reveal">
+      <div class="service-detail-img">
+        <img src="https://planet-aksesoris-atk-percetakan-studiofoto.lovable.app/assets/accessories-CIMcRwyL.jpg" alt="Aksesori & Dekorasi" />
+      </div>
+      <div class="service-detail-content">
+        <div class="service-num">04</div>
+        <span class="section-label">Aksesori & Dekorasi</span>
+        <h2>Aksesori & Dekorasi Indah</h2>
+        <p>Temukan koleksi bunga rangkai, buket hadiah, dan aksesori dekoratif indah untuk berbagai momen istimewa. Cocok untuk hadiah ulang tahun, wisuda, pernikahan, dan berbagai perayaan lainnya.</p>
+        <div class="service-features">
+          <div class="service-feature-item">Buket bunga segar & artificial</div>
+          <div class="service-feature-item">Bunga rajut handmade</div>
+          <div class="service-feature-item">Paket hadiah eksklusif</div>
+          <div class="service-feature-item">Dekorasi acara & pesta</div>
+          <div class="service-feature-item">Alat tulis & perlengkapan kantor</div>
+        </div>
+        <a href="kontak.html" class="btn btn-primary">Pesan Sekarang</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PRICING TABLE -->
+<section class="pricing">
+  <div class="pricing-container">
+    <div class="pricing-header">
+      <span class="section-label">Daftar Harga</span>
+      <h2 class="section-title">Harga Layanan Kami</h2>
+      <p class="section-subtitle" style="margin:0 auto;">Harga terjangkau dengan kualitas terbaik. Hubungi kami untuk penawaran lebih lanjut.</p>
+    </div>
+    <div class="pricing-table scroll-reveal">
+      <table>
+        <thead>
+          <tr>
+            <th>Layanan</th>
+            <th>Keterangan</th>
+            <th>Harga</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Print Hitam Putih</td><td>Per lembar A4</td><td class="price-col">Rp 500</td></tr>
+          <tr><td>Print Berwarna</td><td>Per lembar A4</td><td class="price-col">Rp 2.000</td></tr>
+          <tr><td>Fotokopi</td><td>Per lembar A4</td><td class="price-col">Rp 300</td></tr>
+          <tr><td>Scan Dokumen</td><td>Per lembar, file digital</td><td class="price-col">Rp 2.000</td></tr>
+          <tr><td>Foto Studio (Pas Foto)</td><td>Ukuran 3x4, 4x6 — 2 lembar</td><td class="price-col">Rp 10.000</td></tr>
+          <tr><td>Cetak Foto 5R</td><td>Per lembar glossy</td><td class="price-col">Rp 5.000</td></tr>
+          <tr><td>Cetak Foto 10R</td><td>Per lembar glossy</td><td class="price-col">Rp 15.000</td></tr>
+          <tr><td>Laminating A4</td><td>Per lembar</td><td class="price-col">Rp 5.000</td></tr>
+          <tr><td>Kartu Nama</td><td>Per 100 lembar, full color</td><td class="price-col">Rp 35.000</td></tr>
+          <tr><td>Spanduk / Banner</td><td>Per meter persegi</td><td class="price-col">Rp 25.000</td></tr>
+          <tr><td>Buket Bunga Mini</td><td>Artificial / rajut</td><td class="price-col">Mulai Rp 35.000</td></tr>
+          <tr><td>Buket Bunga Premium</td><td>Paket lengkap dengan pita</td><td class="price-col">Mulai Rp 80.000</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="price-note">* Harga dapat berubah sewaktu-waktu. Hubungi kami untuk konfirmasi harga terbaru dan penawaran khusus.</p>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section class="cta-banner">
+  <h2>Butuh Layanan Sekarang?</h2>
+  <p>Hubungi kami via WhatsApp atau kunjungi toko kami langsung. Kami siap melayani Anda!</p>
+  <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+    <a href="https://wa.me/6282248559116" target="_blank" class="btn btn-primary">
+      💬 Chat WhatsApp
+    </a>
+    <a href="kontak.html" class="btn btn-outline-dark">Lihat Lokasi</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo-badge">PA</div>
+      <h3>Planet Aksesoris</h3>
+      <p>Toko serbaguna terpercaya untuk percetakan, foto studio, alat tulis, dan aksesori dekoratif.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Navigasi</h4>
+      <ul>
+        <li><a href="index.html">Beranda</a></li>
+        <li><a href="layanan.html">Layanan</a></li>
+        <li><a href="produk.html">Produk</a></li>
+        <li><a href="kontak.html">Kontak</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Info Toko</h4>
+      <div class="footer-info-item">
+        <span class="icon">📍</span>
+        <span>Jl. Mesjid Jami No.57, Kota Pagatan, Kec. Kusan Hilir, Kab. Tanah Bumbu, Kalimantan Selatan 72273</span>
+      </div>
+      <div class="footer-info-item">
+        <span class="icon">📞</span>
+        <span>+62 822 4855 9116</span>
+      </div>
+      <div class="footer-info-item">
+        <span class="icon">🕐</span>
+        <span>Senin - Sabtu: 08.00 – 21.00<br>Minggu: 09.00 – 21.00</span>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Planet Aksesoris. Semua hak dilindungi.</p>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script>
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    mobileMenu.style.display = mobileMenu.style.display === 'flex' ? 'none' : 'flex';
+  });
+</script>
+</body>
+</html>
