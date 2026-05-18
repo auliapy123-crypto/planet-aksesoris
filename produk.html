@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Produk — Planet Aksesoris</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* FILTER BAR */
+    .filter-bar {
+      background: var(--white);
+      padding: 32px 24px;
+      position: sticky;
+      top: 70px;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(26,60,94,0.06);
+    }
+    .filter-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .filter-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--gray);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-right: 6px;
+    }
+
+    /* ===== FILTER BUTTON — FIXED ===== */
+    .filter-btn {
+      padding: 8px 18px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer !important;
+      border: 2px solid rgba(26,60,94,0.12);
+      background: transparent;
+      color: var(--gray);
+      transition: all 0.2s ease;
+      font-family: 'DM Sans', sans-serif;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      /* Pastikan tidak terblock oleh elemen lain */
+      pointer-events: auto !important;
+      position: relative;
+      z-index: 10;
+      display: inline-block;
+      line-height: 1;
+      outline: none;
+    }
+    .filter-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .filter-btn.active {
+      background: var(--primary) !important;
+      color: var(--white) !important;
+      border-color: var(--primary) !important;
+    }
+    /* fallback jika --primary belum terdefinisi */
+    .filter-btn.active {
+      background: #1a3c5e !important;
+      color: #ffffff !important;
+      border-color: #1a3c5e !important;
+    }
+
+    /* PRODUCTS GRID */
+    .products-section {
+      padding: 60px 24px 100px;
+      background: var(--light);
+    }
+    .products-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 24px;
+    }
+    .product-card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: all var(--transition);
+      cursor: pointer;
+    }
+    .product-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+    }
+    .product-card.hidden {
+      display: none !important;
+    }
+
+    .product-img {
+      position: relative;
+      height: 220px;
+      overflow: hidden;
+    }
+    .product-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    .product-card:hover .product-img img { transform: scale(1.08); }
+    .product-badge {
+      position: absolute;
+      top: 12px; left: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .badge-blue  { background: var(--primary); color: white; }
+    .badge-gold  { background: var(--accent);  color: var(--primary-dark); }
+    .badge-green { background: #16a34a;         color: white; }
+    .badge-rose  { background: #e11d48;         color: white; }
+
+    .product-info { padding: 20px 22px 22px; }
+    .product-category {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+    .product-info h3 {
+      font-size: 17px;
+      color: var(--primary-dark);
+      margin-bottom: 8px;
+    }
+    .product-info p {
+      font-size: 13px;
+      color: var(--gray);
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+    .product-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .product-price {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary);
+      font-family: 'Playfair Display', serif;
+    }
+    .product-price span {
+      font-size: 12px;
+      color: var(--gray);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+    }
+    .product-order-btn {
+      width: 36px; height: 36px;
+      background: var(--primary);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: white;
+      font-size: 16px;
+      transition: background var(--transition);
+      text-decoration: none;
+    }
+    .product-order-btn:hover { background: var(--accent); }
+
+    /* EMPTY STATE */
+    .empty-state {
+      text-align: center;
+      padding: 80px 24px;
+      display: none;
+    }
+    .empty-state.visible { display: block; }
+    .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
+    .empty-state h3 { color: var(--primary-dark); margin-bottom: 8px; }
+    .empty-state p { color: var(--gray); }
+
+    @media (max-width: 600px) {
+      .products-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 420px) {
+      .products-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="nav-logo">
+      <div class="logo-badge">PA</div>
+      <div class="logo-text">
+        <span class="logo-name">Planet Aksesoris</span>
+        <span class="logo-sub">ATK · Percetakan · Studio Foto</span>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Beranda</a></li>
+      <li><a href="layanan.html">Layanan</a></li>
+      <li><a href="produk.html" class="active">Produk</a></li>
+      <li><a href="kontak.html" class="nav-cta">Hubungi Kami</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobileMenu" style="display:none;flex-direction:column;">
+    <a href="index.html">Beranda</a>
+    <a href="layanan.html">Layanan</a>
+    <a href="produk.html">Produk</a>
+    <a href="kontak.html">Hubungi Kami</a>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <span class="section-label" style="margin-bottom:20px;">Produk Kami</span>
+  <h1>Katalog Produk</h1>
+  <p>Temukan berbagai produk dan kebutuhan ATK, aksesori, dan dekorasi pilihan terbaik kami.</p>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <div class="filter-container">
+    <span class="filter-label">Filter:</span>
+    <button class="filter-btn active" data-filter="semua" type="button">Semua</button>
+    <button class="filter-btn" data-filter="percetakan" type="button">Percetakan</button>
+    <button class="filter-btn" data-filter="foto" type="button">Foto Studio</button>
+    <button class="filter-btn" data-filter="atk" type="button">Alat Tulis</button>
+    <button class="filter-btn" data-filter="aksesori" type="button">Aksesori</button>
+    <button class="filter-btn" data-filter="bunga" type="button">Bunga &amp; Dekorasi</button>
+  </div>
+</div>
+
+<!-- PRODUCTS SECTION -->
+<section class="products-section">
+  <div class="products-container">
+    <div class="products-grid" id="productsGrid">
+
+      <!-- Percetakan -->
+      <div class="product-card" data-category="percetakan">
+        <div class="product-img">
+          <img src="https://planet-aksesoris-atk-percetakan-studiofoto.lovable.app/assets/printing-C1_q1Q0K.jpg" alt="Cetak Dokumen" loading="lazy" />
+          <span class="product-badge badge-blue">Percetakan</span>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Percetakan</div>
+          <h3>Cetak Dokumen A4</h3>
+          <p>Print hitam putih &amp; berwarna, kualitas tajam dan cepat.</p>
+          <div class="product-footer">
+            <div class="product-price">Rp 500<span>/lembar</span></div>
+            <a href="https://wa.me/6282248559116?text=Halo, saya ingin memesan cetak dokumen" class="product-order-btn" target="_blank">→</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-category="percetakan">
+        <div class="product-img">
+          <img src="https://planet-aksesoris-atk-percetakan-studiofoto.lovable.app/assets/printing-C1_q1Q0K.jpg" alt="Kartu Nama" loading="lazy" style="object-position:right;" />
+          <span class="product-badge badge-blue">Percetakan</span>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Percetakan</div>
+          <h3>Kartu Nama Full Color</h3>
+          <p>Desain profesional, cetak 100 lembar kertas ivory premium.</p>
+          <div class="product-footer">
+            <div class="product-price">Rp 35.000<span>/100 lbr</span></div>
+            <a href="https://wa.me/6282248559116?text=Halo, saya ingin memesan kartu nama" class="product-order-btn" target="_blank">→</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-category="percetakan">
+        <div class="product-img">
+          <img src="https://planet-aksesoris-atk-percetakan-studiofoto.lovable.app/assets/printing-C1_q1Q0K.jpg" alt="Spanduk Banner" loading="lazy" style="filter:brightness(0.9);" />
+          <span class="product-badge badge-blue">Percetakan</span>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Percetakan</div>
+          <h3>Spanduk &amp; Banner</h3>
+          <p>Cetak spanduk outdoor/indoor dengan bahan flexy berkualitas.</p>
+          <div class="product-footer">
+            <div class="product-price">Rp 25.000<span>/m²</span></div>
+            <a href="https://wa.me/6282248559116?text=Halo, saya ingin memesan spanduk" class="product-order-btn" target="_blank">→</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Foto -->
+      <div class="product-card" data-category="foto">
+        <div class="product-img">
+          <img src="https://planet-aksesoris-atk-percetakan-studiofoto.lovable.app/assets/studio-Dw7DM2kL.jpg" alt="Pas Foto" loading="lazy" />
+          <span class="product-badge badge-gold">Foto Studio</span>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Foto Studio</div>
+          <h3>Pas Foto Resmi</h3>
+          <p>Foto KTP, paspor, ijazah, SKCK. Langsung cetak di tempat.</p>
+          <div class="product-footer">
+            <div class="product-price">Rp 10.000<span>/sesi</span></div>
+            <a href="https://wa.me/6282248559116?text=Halo, saya ingin foto studio" class="product-order-btn" target="_blank">→</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-category="foto">
+        <div class="product-img">
+          <img src="https://planet-aksesoris-atk-percetakan-studiofoto.lovable.app/assets/photo-processing-DZx9iwyc.jpg" alt="Cetak Foto" loading="lazy" />
+          <span class="product-badge badge-gold">Foto</span>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Foto Studio</div>
+          <h3>Cetak Foto 5R – 20R</h3>
+          <p>Cetak foto keluarga dengan pilihan ukuran 5R, 10R, 12R, 20R.</p>
+          <div class="product-footer">
+            <div class="product-price">Mulai Rp 5.000<span>/lbr</span></div>
+            <a href="https://wa.me/6282248559116?text=Halo, saya ingin cetak foto" class="product-order-btn" target="_blank">→</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-category="foto">
+        <div class="product-img">
+          <img src="https://planet-aksesoris-atk-percetakan-studiofoto.lovable.app/assets/photo-processing-DZx9iwyc.jpg" alt="Bingkai Foto" loading="lazy" style="object-position:left;" />
+          <span class="product-badge badge-gold">Foto</span>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Foto &amp; Bingkai</div>
+          <h3>Bingkai Foto Premium</h3>
+          <p>Berbagai pilihan bingkai foto cantik untuk menghias ruangan Anda.</p>
+          <div class="product-footer">
+            <div class="product-price">Mulai Rp 20.000</div>
+            <a href="https://wa.me/6282248559116?text=Halo, saya ingin memesan bingkai foto" class="product-order-btn" target="_blank">→</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ATK -->
+      <div class="product-card" data-category="atk">
+        <div class="product-img">
+          <img src="https://planet-aksesoris-atk-percetakan-studiofoto.lovable.app/assets/stationery-k6Oo_Tjm.jpg" alt="Alat Tulis" loading="lazy" />
+          <span class="product-badge badge-green">ATK</span>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Alat Tulis</div>
+          <h3>Perlengkapan Tulis Lengkap</h3>
+          <p>Pena, pensil, spidol, penghapus, dan berbagai alat tulis berkualitas.</p>
+          <div class="product-footer">
+            <div class="product-price">Mulai Rp 2.000</div>
+            <a href="https://wa.me/6282248559116?text=Halo, saya ingin membeli ATK" class="product-order-btn" target="_blank">→</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-category="atk">
+        <div class="product-img">
+          <img src="https://planet-aksesoris-atk-percetakan-studiofoto.lovable.app/assets/stationery-k6Oo_Tjm.jpg" alt="Perlengkapan Kantor" loading="lazy" style="object-position: bottom;" />
+          <span class="product-badge badge-green">ATK</span>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Alat Tulis</div>
+          <h3>Perlengkapan Kantor</h3>
+          <p>Map, stepler, klip, selotip, gunting dan kebutuhan kantor lainnya.</p>
+          <div class="product-footer">
+            <div class="product-price">Mulai Rp 5.000</div>
+            <a href="https://wa.me/6282248559116?text=Halo, saya ingin beli perlengkapan kantor" class="product-order-btn" target="_blank">→</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Aksesori -->
+      <div class="product-card" data-category="aksesori">
+        <div class="product-img">
+          <img src="https://planet-aksesoris-atk-percetakan-studiofoto.lovable.app/assets/accessories-CIMcRwyL.jpg" alt="Aksesori" loading="lazy" />
+          <span class="product-badge badge-rose">Aksesori</span>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Aksesori</div>
+          <h3>Aksesori Dekoratif</h3>
+          <p>Berbagai aksesori cantik untuk mempercantik ruangan dan koleksi.</p>
+          <div class="product-footer">
+            <div class="product-price">Mulai Rp 15.000</div>
+            <a href="https://wa.me/6282248559116?text=Halo, saya ingin membeli aksesori" class="product-order-btn" target="_blank">→</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bunga -->
+      <div class="product-card" data-category="bunga">
+        <div class="product-img">
+          <img src="https://planet-aksesoris-atk-percetakan-studiofoto.lovable.app/assets/accessories-2-CEtQ4HZT.jpg" alt="Buket Premium" loading="lazy" />
+          <span class="product-badge badge-rose">Bunga</span>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Bunga &amp; Dekorasi</div>
+          <h3>Buket Premium</h3>
+          <p>Buket bunga cantik untuk wisuda, ulang tahun, dan anniversary.</p>
+          <div class="product-footer">
+            <div class="product-price">Mulai Rp 80.000</div>
+            <a href="https://wa.me/6282248559116?text=Halo, saya ingin memesan buket premium" class="product-order-btn" target="_blank">→</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-category="bunga">
+        <div class="product-img">
+          <img src="https://planet-aksesoris-atk-percetakan-studiofoto.lovable.app/assets/accessories-4-CyMdEt3u.jpg" alt="Bunga Rajut" loading="lazy" />
+          <span class="product-badge badge-rose">Bunga</span>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Bunga &amp; Dekorasi</div>
+          <h3>Bunga Rajut Handmade</h3>
+          <p>Bunga rajut tahan lama sebagai kenang-kenangan dan dekorasi unik.</p>
+          <div class="product-footer">
+            <div class="product-price">Mulai Rp 35.000</div>
+            <a href="https://wa.me/6282248559116?text=Halo, saya ingin memesan bunga rajut" class="product-order-btn" target="_blank">→</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-category="bunga">
+        <div class="product-img">
+          <img src="https://planet-aksesoris-atk-percetakan-studiofoto.lovable.app/assets/accessories-3-BRh0oDlq.jpg" alt="Bunga Hias" loading="lazy" />
+          <span class="product-badge badge-rose">Bunga</span>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Bunga &amp; Dekorasi</div>
+          <h3>Rangkaian Bunga Hias</h3>
+          <p>Rangkaian bunga hias artificial cantik untuk dekorasi rumah dan acara.</p>
+          <div class="product-footer">
+            <div class="product-price">Mulai Rp 20.000</div>
+            <a href="https://wa.me/6282248559116?text=Halo, saya ingin memesan bunga hias" class="product-order-btn" target="_blank">→</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="empty-state" id="emptyState">
+      <div class="icon">🔍</div>
+      <h3>Produk tidak ditemukan</h3>
+      <p>Coba pilih kategori lain atau hubungi kami untuk informasi lebih lanjut.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo-badge">PA</div>
+      <h3>Planet Aksesoris</h3>
+      <p>Toko serbaguna terpercaya untuk percetakan, foto studio, alat tulis, dan aksesori dekoratif.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Navigasi</h4>
+      <ul>
+        <li><a href="index.html">Beranda</a></li>
+        <li><a href="layanan.html">Layanan</a></li>
+        <li><a href="produk.html">Produk</a></li>
+        <li><a href="kontak.html">Kontak</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Info Toko</h4>
+      <div class="footer-info-item">
+        <span class="icon">📍</span>
+        <span>Jl. Mesjid Jami No.57, Kota Pagatan, Kec. Kusan Hilir, Kab. Tanah Bumbu, Kalimantan Selatan 72273</span>
+      </div>
+      <div class="footer-info-item">
+        <span class="icon">📞</span>
+        <span>+62 822 4855 9116</span>
+      </div>
+      <div class="footer-info-item">
+        <span class="icon">🕐</span>
+        <span>Senin - Sabtu: 08.00 – 21.00<br>Minggu: 09.00 – 21.00</span>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Planet Aksesoris. Semua hak dilindungi.</p>
+  </div>
+</footer>
+
+<!-- Load main.js DULU, lalu filter script di bawah agar tidak ter-override -->
+<script src="js/main.js"></script>
+
+<script>
+  // ============================================================
+  // HAMBURGER MENU
+  // ============================================================
+  (function() {
+    var hamburger = document.getElementById('hamburger');
+    var mobileMenu = document.getElementById('mobileMenu');
+    if (hamburger && mobileMenu) {
+      hamburger.addEventListener('click', function() {
+        hamburger.classList.toggle('open');
+        mobileMenu.style.display = mobileMenu.style.display === 'flex' ? 'none' : 'flex';
+      });
+    }
+  })();
+
+  // ============================================================
+  // PRODUCT FILTER — dipasang SETELAH main.js selesai load
+  // menggunakan event delegation agar tidak bisa di-override
+  // ============================================================
+  (function() {
+    var filterContainer = document.querySelector('.filter-container');
+    var emptyState      = document.getElementById('emptyState');
+
+    if (!filterContainer) return;
+
+    // Gunakan event delegation pada container — lebih kebal terhadap override
+    filterContainer.addEventListener('click', function(e) {
+      var btn = e.target.closest('.filter-btn');
+      if (!btn) return;
+
+      e.stopPropagation(); // cegah bubble ke elemen lain
+
+      // Update status active
+      document.querySelectorAll('.filter-btn').forEach(function(b) {
+        b.classList.remove('active');
+      });
+      btn.classList.add('active');
+
+      var filter  = btn.getAttribute('data-filter');
+      var cards   = document.querySelectorAll('.product-card');
+      var visible = 0;
+
+      cards.forEach(function(card) {
+        if (filter === 'semua' || card.getAttribute('data-category') === filter) {
+          card.classList.remove('hidden');
+          visible++;
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+
+      if (emptyState) {
+        emptyState.classList.toggle('visible', visible === 0);
+      }
+    });
+  })();
+</script>
+</body>
+</html>
